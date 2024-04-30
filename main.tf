@@ -22,3 +22,9 @@ resource "null_resource" "ansible" {
   }
 
 }
+# we need to run the null resource first then create ami so we give null resource.ami
+resource "aws_ami_from_instance" "ami" {
+  depends_on         = [null_resource.ansible]
+  name               = "golden-ami-${formatdate("DD-MM-YY", timestamp())}"
+  source_instance_id = aws_instance.ami.id
+}
